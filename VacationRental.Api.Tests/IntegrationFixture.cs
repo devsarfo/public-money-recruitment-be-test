@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.TestHost;
 using System;
 using System.Net.Http;
+using Microsoft.AspNetCore.Builder;
 using Xunit;
 
 namespace VacationRental.Api.Tests
@@ -15,8 +16,7 @@ namespace VacationRental.Api.Tests
 
         public IntegrationFixture()
         {
-            _server = new TestServer(new WebHostBuilder().UseStartup<Startup>());
-
+            _server = new TestServer(new WebHostBuilder());
             Client = _server.CreateClient();
         }
 
