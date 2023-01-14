@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using VacationRental.Api.Models;
+using VacationRental.Api.Requests;
+using VacationRental.Api.Responses;
 
 namespace VacationRental.Api.Controllers
 {
@@ -34,28 +36,18 @@ namespace VacationRental.Api.Controllers
         public ResourceIdViewModel Post(BookingBindingModel model)
         {
             if (model.Nights <= 0)
-                throw new ApplicationException("Nigts must be positive");
+                throw new ApplicationException("Nights must be positive");
+            
             if (!_rentals.ContainsKey(model.RentalId))
                 throw new ApplicationException("Rental not found");
 
             for (var i = 0; i < model.Nights; i++)
             {
-                var count = 0;
-                foreach (var booking in _bookings.Values)
-                {
-                    if (booking.RentalId == model.RentalId
-                        && (booking.Start <= model.Start.Date && booking.Start.AddDays(booking.Nights) > model.Start.Date)
-                        || (booking.Start < model.Start.AddDays(model.Nights) && booking.Start.AddDays(booking.Nights) >= model.Start.AddDays(model.Nights))
-                        || (booking.Start > model.Start && booking.Start.AddDays(booking.Nights) < model.Start.AddDays(model.Nights)))
-                    {
-                        count++;
-                    }
-                }
+                var count = _bookings.Values.Count(booking => booking.RentalId == model.RentalId && (booking.Start <= model.Start.Date && booking.Start.AddDays(booking.Nights) > model.Start.Date) || (booking.Start < model.Start.AddDays(model.Nights) && booking.Start.AddDays(booking.Nights) >= model.Start.AddDays(model.Nights)) || (booking.Start > model.Start && booking.Start.AddDays(booking.Nights) < model.Start.AddDays(model.Nights)));
                 if (count >= _rentals[model.RentalId].Units)
                     throw new ApplicationException("Not available");
             }
-
-
+            
             var key = new ResourceIdViewModel { Id = _bookings.Keys.Count + 1 };
 
             _bookings.Add(key.Id, new BookingViewModel

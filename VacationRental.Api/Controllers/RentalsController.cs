@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using VacationRental.Api.Models;
+using VacationRental.Api.Requests;
+using VacationRental.Api.Responses;
 
 namespace VacationRental.Api.Controllers
 {
@@ -34,7 +35,8 @@ namespace VacationRental.Api.Controllers
             _rentals.Add(key.Id, new RentalViewModel
             {
                 Id = key.Id,
-                Units = model.Units
+                Units = model.Units,
+                PreparationTimeInDays = model.PreparationTimeInDays
             });
 
             return key;

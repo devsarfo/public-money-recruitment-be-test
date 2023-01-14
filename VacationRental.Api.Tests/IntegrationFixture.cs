@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.TestHost;
 using System;
 using System.Net.Http;
-using Microsoft.AspNetCore.Builder;
 using Xunit;
 
 namespace VacationRental.Api.Tests
