@@ -1,17 +1,16 @@
-﻿namespace VacationRental.Core.Models
+﻿namespace VacationRental.Core.Models;
+
+public class BookingBindingModel
 {
-    public class BookingBindingModel
+    public int RentalId { get; init; }
+
+    public DateTime Start
     {
-        public int RentalId { get; set; }
-
-        public DateTime Start
-        {
-            get => _startIgnoreTime;
-            set => _startIgnoreTime = value.Date;
-        }
-
-        private DateTime _startIgnoreTime;
-        
-        public int Nights { get; set; }
+        get => _startIgnoreTime;
+        init => _startIgnoreTime = value.Date;
     }
+
+    private readonly DateTime _startIgnoreTime;
+        
+    public int Nights { get; init; }
 }

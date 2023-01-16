@@ -1,9 +1,8 @@
-﻿namespace VacationRental.Core.Models
+﻿namespace VacationRental.Core.Models;
+
+public class RentalBindingModel
 {
-    public class RentalBindingModel
-    {
-        public int Units { get; set; }
+    public int Units { get; init; }
         
-        public int PreparationTimeInDays { get; set; }
-    }
+    public int PreparationTimeInDays { get; init; }
 }

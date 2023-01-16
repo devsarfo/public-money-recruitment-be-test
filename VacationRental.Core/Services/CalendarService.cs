@@ -1,6 +1,5 @@
 using VacationRental.Core.Entities;
 using VacationRental.Core.Interfaces;
-using Calendar = VacationRental.Core.Entities.Calendar;
 
 namespace VacationRental.Core.Services;
 
@@ -22,13 +21,13 @@ public class CalendarService : ICalendarService
         var calendar = new Calendar
         {
             RentalId = rental.Id,
-            Dates = new List<CalendarDate>(),
+            Dates = new List<CalendarDate>()
         };
         
         var dates = Enumerable.Range(0, nights).Select(day => new CalendarDate
         {
             Date = start.Date.AddDays(day),
-            Bookings = new List<CalendarBooking>(),
+            Bookings = new List<CalendarBooking>()
         });
         
         foreach (var date in dates)
@@ -41,7 +40,7 @@ public class CalendarService : ICalendarService
             }).ToList();
             
             var preparationTimes = await _bookingService.GetAllAsync(rental.Id, booking => date.Date >= booking.Start.AddDays(booking.Nights) && date.Date <= booking.Start.AddDays(booking.Nights + rental.PreparationTimeInDays));
-            date.PreparationTimes = preparationTimes.Select(preparationTime => new CalendarPreparationTime()
+            date.PreparationTimes = preparationTimes.Select(preparationTime => new CalendarPreparationTime
             {
                 Unit = preparationTime.Unit.Number
             }).ToList();

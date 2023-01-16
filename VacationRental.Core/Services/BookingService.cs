@@ -22,7 +22,7 @@ public class BookingService : IBookingService
         return booking;
     }
     
-    public async Task<List<Booking>> GetAllAsync(int? rentalId = null, Expression<Func<Booking, bool>>? filter = null)
+    public Task<List<Booking>> GetAllAsync(int? rentalId = null, Expression<Func<Booking, bool>>? filter = null)
     {
         var bookings = Bookings.Include(b => b.Unit).AsQueryable();
  
@@ -32,17 +32,15 @@ public class BookingService : IBookingService
         if (filter != null) 
             bookings = bookings.Where(filter);
         
-        return bookings.ToList();
+        return Task.FromResult(bookings.ToList());
     }
 
     public async Task<Booking> CreateAsync(Rental rental, DateTime start, int nights)
     {
-        Expression<Func<Booking, bool>> filter = booking => 
+        var bookings = await GetAllAsync(rental.Id, booking => 
             (booking.Start <= start.Date && booking.Start.AddDays(booking.Nights + rental.PreparationTimeInDays) > start.Date)
             || (booking.Start < start.AddDays(nights) && booking.Start.AddDays(booking.Nights + rental.PreparationTimeInDays) >= start.AddDays(nights))
-            || (booking.Start > start && booking.Start.AddDays(booking.Nights + rental.PreparationTimeInDays) < start.AddDays(nights));
-        
-        var bookings = await GetAllAsync(rental.Id, filter);
+            || (booking.Start > start && booking.Start.AddDays(booking.Nights + rental.PreparationTimeInDays) < start.AddDays(nights)));
 
         //Check Availability
         if (bookings.Count >= rental.Units.Count) throw new ApplicationException("Not available");
@@ -52,7 +50,7 @@ public class BookingService : IBookingService
         var booking = new Booking
         {
             RentalId = rental.Id,
-            UnitId = unit.Id,
+            UnitId = unit!.Id,
             Nights = nights,
             Start = start
         };
