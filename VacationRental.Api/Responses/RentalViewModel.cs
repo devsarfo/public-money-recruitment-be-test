@@ -1,13 +1,11 @@
-﻿namespace VacationRental.Api.Responses
-{
-    public class RentalViewModel
-    {
-        public int Id { get; set; }
-        
-        public int Units { get; set; }
-        
-        public int PreparationTimeInDays { get; set; }
+﻿namespace VacationRental.Api.Responses;
 
-    }
-    
+public class RentalViewModel
+{
+    public int Id { get; set; }
+        
+    public int Units { get; init; }
+        
+    public int PreparationTimeInDays { get; set; }
+
 }

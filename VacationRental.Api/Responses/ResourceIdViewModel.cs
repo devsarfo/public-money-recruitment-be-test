@@ -1,7 +1,6 @@
-﻿namespace VacationRental.Api.Responses
+﻿namespace VacationRental.Api.Responses;
+
+public class ResourceIdViewModel
 {
-    public class ResourceIdViewModel
-    {
-        public int Id { get; set; }
-    }
+    public int Id { get; init; }
 }

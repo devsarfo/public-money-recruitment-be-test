@@ -1,15 +1,14 @@
 ﻿using System;
 
-namespace VacationRental.Api.Responses
+namespace VacationRental.Api.Responses;
+
+public class BookingViewModel
 {
-    public class BookingViewModel
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
         
-        public int RentalId { get; set; }
+    public int RentalId { get; init; }
         
-        public DateTime Start { get; set; }
+    public DateTime Start { get; init; }
         
-        public int Nights { get; set; }
-    }
+    public int Nights { get; init; }
 }
