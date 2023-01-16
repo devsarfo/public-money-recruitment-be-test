@@ -1,59 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using VacationRental.Api.Models;
+using VacationRental.Api.Responses;
+using VacationRental.Core.Entities;
+using VacationRental.Core.Interfaces;
 
-namespace VacationRental.Api.Controllers
+namespace VacationRental.Api.Controllers;
+
+[Route("api/v1/calendar")]
+[ApiController]
+public class CalendarController : ControllerBase
 {
-    [Route("api/v1/calendar")]
-    [ApiController]
-    public class CalendarController : ControllerBase
+    private readonly ICalendarService _calendarService;
+    private readonly IMapper _mapper;
+
+    public CalendarController(ICalendarService calendarService, IMapper mapper)
     {
-        private readonly IDictionary<int, RentalViewModel> _rentals;
-        private readonly IDictionary<int, BookingViewModel> _bookings;
+        _calendarService = calendarService;
+        _mapper = mapper;
+    }
 
-        public CalendarController(
-            IDictionary<int, RentalViewModel> rentals,
-            IDictionary<int, BookingViewModel> bookings)
-        {
-            _rentals = rentals;
-            _bookings = bookings;
-        }
+    [HttpGet]
+    public async Task<CalendarViewModel> Get(int rentalId, DateTime start, int nights)
+    {
+        if (nights < 0) throw new ApplicationException("Nights must be at least one");
+        var calendar = await _calendarService.GetByCalendarAsync(rentalId, start, nights);
 
-        [HttpGet]
-        public CalendarViewModel Get(int rentalId, DateTime start, int nights)
-        {
-            if (nights < 0)
-                throw new ApplicationException("Nights must be positive");
-            if (!_rentals.ContainsKey(rentalId))
-                throw new ApplicationException("Rental not found");
-
-            var result = new CalendarViewModel 
-            {
-                RentalId = rentalId,
-                Dates = new List<CalendarDateViewModel>() 
-            };
-            for (var i = 0; i < nights; i++)
-            {
-                var date = new CalendarDateViewModel
-                {
-                    Date = start.Date.AddDays(i),
-                    Bookings = new List<CalendarBookingViewModel>()
-                };
-
-                foreach (var booking in _bookings.Values)
-                {
-                    if (booking.RentalId == rentalId
-                        && booking.Start <= date.Date && booking.Start.AddDays(booking.Nights) > date.Date)
-                    {
-                        date.Bookings.Add(new CalendarBookingViewModel { Id = booking.Id });
-                    }
-                }
-
-                result.Dates.Add(date);
-            }
-
-            return result;
-        }
+        return _mapper.Map<Calendar, CalendarViewModel>(calendar);
     }
 }

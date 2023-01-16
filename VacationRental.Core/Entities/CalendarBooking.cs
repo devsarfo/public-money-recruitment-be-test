@@ -1,6 +1,6 @@
-﻿namespace VacationRental.Api.Models;
+namespace VacationRental.Core.Entities;
 
-public class CalendarBookingViewModel
+public class CalendarBooking
 {
     public int Id { get; set; }
         
